@@ -13,6 +13,7 @@ use filecoin_proofs::types::*;
 use filecoin_proofs::with_shape;
 use filecoin_proofs::PoStType;
 use paired::bls12_381::Bls12;
+use storage_proofs::api_version::APIVersion;
 use storage_proofs::compound_proof::CompoundProof;
 use storage_proofs::porep::stacked::{StackedCompound, StackedDrg};
 use storage_proofs::post::fallback::{FallbackPoSt, FallbackPoStCircuit, FallbackPoStCompound};
@@ -93,7 +94,7 @@ struct Opt {
     constraints_for_sector_sizes: Vec<u64>,
 }
 
-fn winning_post_info(sector_size: u64) -> CircuitInfo {
+fn winning_post_info(sector_size: u64, api_version: APIVersion) -> CircuitInfo {
     with_shape!(
         sector_size,
         get_winning_post_info,
@@ -103,11 +104,12 @@ fn winning_post_info(sector_size: u64) -> CircuitInfo {
             sector_count: WINNING_POST_SECTOR_COUNT,
             typ: PoStType::Winning,
             priority: true,
+            api_version,
         }
     )
 }
 
-fn window_post_info(sector_size: u64) -> CircuitInfo {
+fn window_post_info(sector_size: u64, api_version: APIVersion) -> CircuitInfo {
     with_shape!(
         sector_size,
         get_window_post_info,
@@ -121,11 +123,12 @@ fn window_post_info(sector_size: u64) -> CircuitInfo {
                 .expect("unknown sector size"),
             typ: PoStType::Window,
             priority: true,
+            api_version,
         }
     )
 }
 
-fn porep_info(sector_size: u64) -> (CircuitInfo, usize) {
+fn porep_info(sector_size: u64, api_version: APIVersion) -> (CircuitInfo, usize) {
     let partitions = PoRepProofPartitions(
         *POREP_PARTITIONS
             .read()
@@ -140,6 +143,7 @@ fn porep_info(sector_size: u64) -> (CircuitInfo, usize) {
             sector_size: SectorSize(sector_size),
             partitions,
             porep_id: [0; 32],
+            api_version,
         }
     );
     (info, partitions.into())
@@ -211,6 +215,9 @@ pub fn main() {
     let count_window = opts.window;
     let count_porep = opts.porep;
 
+    // TODO: get api version from opts
+    let api_version = APIVersion::V1_0;
+
     for sector_size in sizes {
         let human_size = sector_size
             .file_size(file_size_opts::BINARY)
@@ -218,7 +225,7 @@ pub fn main() {
         println!("Getting circuit info for sector size: {}", human_size);
 
         if count_winning {
-            let info = winning_post_info(sector_size);
+            let info = winning_post_info(sector_size, api_version);
             println!(
                 "{} Winning PoSt constraints: {}, public inputs: {}, partitions: 1",
                 human_size, info.constraints, info.inputs
@@ -226,7 +233,7 @@ pub fn main() {
         }
 
         if count_window {
-            let info = window_post_info(sector_size);
+            let info = window_post_info(sector_size, api_version);
             println!(
                 "{} Window PoSt constraints (per partition): {}, public inputs (per partition): {}, partitions: <depends on input size>",
                 human_size, info.constraints, info.inputs
@@ -234,7 +241,7 @@ pub fn main() {
         }
 
         if count_porep {
-            let (info, partitions) = porep_info(sector_size);
+            let (info, partitions) = porep_info(sector_size, api_version);
             println!(
                 "{} PoRep constraints: {}, public inputs: {}, partitions: {}",
                 human_size, info.constraints, info.inputs, partitions
