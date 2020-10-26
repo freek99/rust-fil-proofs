@@ -497,9 +497,11 @@ pub fn generate_fallback_sector_challenges<Tree: 'static + MerkleTreeTrait>(
 
             for n in 0..post_config.challenge_count {
                 let challenge_index = match post_config.api_version {
-                    APIVersion::V1_0 => (partition_index * post_config.sector_count + i)
-                        * post_config.challenge_count
-                        + n,
+                    APIVersion::V1_0 => {
+                        (partition_index * post_config.sector_count + i)
+                            * post_config.challenge_count
+                            + n
+                    }
                     APIVersion::V1_1 => n,
                 } as u64;
 

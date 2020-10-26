@@ -129,8 +129,8 @@ fn select_challenges(
 mod tests {
     use super::*;
 
-    use storage_proofs::api_version::APIVersion;
     use crate::types::PoStType;
+    use storage_proofs::api_version::APIVersion;
 
     #[test]
     fn partition_layer_challenges_test() {

@@ -379,8 +379,10 @@ impl<'a, Tree: 'a + MerkleTreeTrait> ProofScheme<'a> for FallbackPoSt<'a, Tree> 
 
                     let mut proofs = Vec::with_capacity(num_sectors_per_chunk);
 
-                    for (i, (pub_sector, priv_sector)) in
-                        pub_sectors_chunk.iter().zip(priv_sectors_chunk.iter()).enumerate()
+                    for (i, (pub_sector, priv_sector)) in pub_sectors_chunk
+                        .iter()
+                        .zip(priv_sectors_chunk.iter())
+                        .enumerate()
                     {
                         let tree = priv_sector.tree;
                         let sector_id = pub_sector.id;
@@ -402,11 +404,9 @@ impl<'a, Tree: 'a + MerkleTreeTrait> ProofScheme<'a> for FallbackPoSt<'a, Tree> 
                             .map(|index| {
                                 let challenge_index = match pub_params.api_version {
                                     APIVersion::V1_0 => {
-                                        (j * num_sectors_per_chunk + i)
-                                            * num_challenges
-                                            + index
-                                    },
-                                    APIVersion::V1_1 => index
+                                        (j * num_sectors_per_chunk + i) * num_challenges + index
+                                    }
+                                    APIVersion::V1_1 => index,
                                 } as u64;
 
                                 let challenged_leaf = generate_leaf_challenge(
@@ -628,8 +628,7 @@ impl<'a, Tree: 'a + MerkleTreeTrait> ProofScheme<'a> for FallbackPoSt<'a, Tree> 
                 );
 
                 for (n, inclusion_proof) in inclusion_proofs.iter().enumerate() {
-                    let legacy_index =
-                        (j * num_sectors_per_chunk + i) * challenge_count + n;
+                    let legacy_index = (j * num_sectors_per_chunk + i) * challenge_count + n;
 
                     let challenge_index = match pub_params.shape {
                         PoStShape::Winning => {
@@ -642,11 +641,11 @@ impl<'a, Tree: 'a + MerkleTreeTrait> ProofScheme<'a> for FallbackPoSt<'a, Tree> 
                             );
 
                             i
-                        },
+                        }
                         PoStShape::Window => match pub_params.api_version {
                             APIVersion::V1_0 => legacy_index,
                             APIVersion::V1_1 => n,
-                        }
+                        },
                     } as u64;
 
                     let challenged_leaf = generate_leaf_challenge(

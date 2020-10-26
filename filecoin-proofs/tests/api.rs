@@ -96,7 +96,10 @@ fn test_seal_lifecycle_32kib_top_8_8_2() -> Result<()> {
 //    seal_lifecycle::<SectorShape64GiB>(SECTOR_SIZE_64_GIB, APIVersion::V1_1)
 //}
 
-fn seal_lifecycle<Tree: 'static + MerkleTreeTrait>(sector_size: u64, api_version: APIVersion) -> Result<()> {
+fn seal_lifecycle<Tree: 'static + MerkleTreeTrait>(
+    sector_size: u64,
+    api_version: APIVersion,
+) -> Result<()> {
     let rng = &mut XorShiftRng::from_seed(TEST_SEED);
     let prover_fr: DefaultTreeDomain = Fr::random(rng).into();
     let mut prover_id = [0u8; 32];
@@ -159,7 +162,11 @@ fn test_resumable_seal() {
 ///
 /// The current code works on two layers only. The `layer_to_delete` specifies (zero-based) which
 /// layer should be deleted.
-fn run_resumable_seal<Tree: 'static + MerkleTreeTrait>(skip_proofs: bool, layer_to_delete: usize, api_version: APIVersion) {
+fn run_resumable_seal<Tree: 'static + MerkleTreeTrait>(
+    skip_proofs: bool,
+    layer_to_delete: usize,
+    api_version: APIVersion,
+) {
     init_logger();
 
     let sector_size = SECTOR_SIZE_2_KIB;
@@ -307,7 +314,8 @@ fn test_winning_post_empty_sector_challenge() -> Result<()> {
     let sector_size = SECTOR_SIZE_2_KIB;
     let api_version = APIVersion::V1_0;
 
-    let (_, _, _, _) = create_seal::<_, SectorShape2KiB>(rng, sector_size, prover_id, true, api_version)?;
+    let (_, _, _, _) =
+        create_seal::<_, SectorShape2KiB>(rng, sector_size, prover_id, true, api_version)?;
 
     let random_fr: DefaultTreeDomain = Fr::random(rng).into();
     let mut randomness = [0u8; 32];
@@ -333,7 +341,11 @@ fn test_winning_post_empty_sector_challenge() -> Result<()> {
     Ok(())
 }
 
-fn winning_post<Tree: 'static + MerkleTreeTrait>(sector_size: u64, fake: bool, api_version: APIVersion) -> Result<()> {
+fn winning_post<Tree: 'static + MerkleTreeTrait>(
+    sector_size: u64,
+    fake: bool,
+    api_version: APIVersion,
+) -> Result<()> {
     let rng = &mut XorShiftRng::from_seed(TEST_SEED);
 
     let prover_fr: DefaultTreeDomain = Fr::random(rng).into();
@@ -428,10 +440,34 @@ fn test_window_post_single_partition_smaller_2kib_base_8() -> Result<()> {
         .get(&sector_size)
         .expect("unknown sector size");
 
-    window_post::<SectorShape2KiB>(sector_size, sector_count / 2, sector_count, false, APIVersion::V1_0)?;
-    window_post::<SectorShape2KiB>(sector_size, sector_count / 2, sector_count, true, APIVersion::V1_0)?;
-    window_post::<SectorShape2KiB>(sector_size, sector_count / 2, sector_count, false, APIVersion::V1_1)?;
-    window_post::<SectorShape2KiB>(sector_size, sector_count / 2, sector_count, true, APIVersion::V1_1)
+    window_post::<SectorShape2KiB>(
+        sector_size,
+        sector_count / 2,
+        sector_count,
+        false,
+        APIVersion::V1_0,
+    )?;
+    window_post::<SectorShape2KiB>(
+        sector_size,
+        sector_count / 2,
+        sector_count,
+        true,
+        APIVersion::V1_0,
+    )?;
+    window_post::<SectorShape2KiB>(
+        sector_size,
+        sector_count / 2,
+        sector_count,
+        false,
+        APIVersion::V1_1,
+    )?;
+    window_post::<SectorShape2KiB>(
+        sector_size,
+        sector_count / 2,
+        sector_count,
+        true,
+        APIVersion::V1_1,
+    )
 }
 
 #[test]
@@ -444,10 +480,34 @@ fn test_window_post_two_partitions_matching_2kib_base_8() -> Result<()> {
         .get(&sector_size)
         .expect("unknown sector size");
 
-    window_post::<SectorShape2KiB>(sector_size, 2 * sector_count, sector_count, false, APIVersion::V1_0)?;
-    window_post::<SectorShape2KiB>(sector_size, 2 * sector_count, sector_count, true, APIVersion::V1_0)?;
-    window_post::<SectorShape2KiB>(sector_size, 2 * sector_count, sector_count, false, APIVersion::V1_1)?;
-    window_post::<SectorShape2KiB>(sector_size, 2 * sector_count, sector_count, true, APIVersion::V1_1)
+    window_post::<SectorShape2KiB>(
+        sector_size,
+        2 * sector_count,
+        sector_count,
+        false,
+        APIVersion::V1_0,
+    )?;
+    window_post::<SectorShape2KiB>(
+        sector_size,
+        2 * sector_count,
+        sector_count,
+        true,
+        APIVersion::V1_0,
+    )?;
+    window_post::<SectorShape2KiB>(
+        sector_size,
+        2 * sector_count,
+        sector_count,
+        false,
+        APIVersion::V1_1,
+    )?;
+    window_post::<SectorShape2KiB>(
+        sector_size,
+        2 * sector_count,
+        sector_count,
+        true,
+        APIVersion::V1_1,
+    )
 }
 
 #[test]
@@ -460,10 +520,34 @@ fn test_window_post_two_partitions_matching_4kib_sub_8_2() -> Result<()> {
         .get(&sector_size)
         .expect("unknown sector size");
 
-    window_post::<SectorShape4KiB>(sector_size, 2 * sector_count, sector_count, false, APIVersion::V1_0)?;
-    window_post::<SectorShape4KiB>(sector_size, 2 * sector_count, sector_count, true, APIVersion::V1_0)?;
-    window_post::<SectorShape4KiB>(sector_size, 2 * sector_count, sector_count, false, APIVersion::V1_1)?;
-    window_post::<SectorShape4KiB>(sector_size, 2 * sector_count, sector_count, true, APIVersion::V1_1)
+    window_post::<SectorShape4KiB>(
+        sector_size,
+        2 * sector_count,
+        sector_count,
+        false,
+        APIVersion::V1_0,
+    )?;
+    window_post::<SectorShape4KiB>(
+        sector_size,
+        2 * sector_count,
+        sector_count,
+        true,
+        APIVersion::V1_0,
+    )?;
+    window_post::<SectorShape4KiB>(
+        sector_size,
+        2 * sector_count,
+        sector_count,
+        false,
+        APIVersion::V1_1,
+    )?;
+    window_post::<SectorShape4KiB>(
+        sector_size,
+        2 * sector_count,
+        sector_count,
+        true,
+        APIVersion::V1_1,
+    )
 }
 
 #[test]
@@ -476,10 +560,34 @@ fn test_window_post_two_partitions_matching_16kib_sub_8_8() -> Result<()> {
         .get(&sector_size)
         .expect("unknown sector size");
 
-    window_post::<SectorShape16KiB>(sector_size, 2 * sector_count, sector_count, false, APIVersion::V1_0)?;
-    window_post::<SectorShape16KiB>(sector_size, 2 * sector_count, sector_count, true, APIVersion::V1_0)?;
-    window_post::<SectorShape16KiB>(sector_size, 2 * sector_count, sector_count, false, APIVersion::V1_1)?;
-    window_post::<SectorShape16KiB>(sector_size, 2 * sector_count, sector_count, true, APIVersion::V1_1)
+    window_post::<SectorShape16KiB>(
+        sector_size,
+        2 * sector_count,
+        sector_count,
+        false,
+        APIVersion::V1_0,
+    )?;
+    window_post::<SectorShape16KiB>(
+        sector_size,
+        2 * sector_count,
+        sector_count,
+        true,
+        APIVersion::V1_0,
+    )?;
+    window_post::<SectorShape16KiB>(
+        sector_size,
+        2 * sector_count,
+        sector_count,
+        false,
+        APIVersion::V1_1,
+    )?;
+    window_post::<SectorShape16KiB>(
+        sector_size,
+        2 * sector_count,
+        sector_count,
+        true,
+        APIVersion::V1_1,
+    )
 }
 
 #[test]
@@ -492,10 +600,34 @@ fn test_window_post_two_partitions_matching_32kib_top_8_8_2() -> Result<()> {
         .get(&sector_size)
         .expect("unknown sector size");
 
-    window_post::<SectorShape32KiB>(sector_size, 2 * sector_count, sector_count, false, APIVersion::V1_0)?;
-    window_post::<SectorShape32KiB>(sector_size, 2 * sector_count, sector_count, true, APIVersion::V1_0)?;
-    window_post::<SectorShape32KiB>(sector_size, 2 * sector_count, sector_count, false, APIVersion::V1_1)?;
-    window_post::<SectorShape32KiB>(sector_size, 2 * sector_count, sector_count, true, APIVersion::V1_1)
+    window_post::<SectorShape32KiB>(
+        sector_size,
+        2 * sector_count,
+        sector_count,
+        false,
+        APIVersion::V1_0,
+    )?;
+    window_post::<SectorShape32KiB>(
+        sector_size,
+        2 * sector_count,
+        sector_count,
+        true,
+        APIVersion::V1_0,
+    )?;
+    window_post::<SectorShape32KiB>(
+        sector_size,
+        2 * sector_count,
+        sector_count,
+        false,
+        APIVersion::V1_1,
+    )?;
+    window_post::<SectorShape32KiB>(
+        sector_size,
+        2 * sector_count,
+        sector_count,
+        true,
+        APIVersion::V1_1,
+    )
 }
 
 #[test]
@@ -508,10 +640,34 @@ fn test_window_post_two_partitions_smaller_2kib_base_8() -> Result<()> {
         .get(&sector_size)
         .expect("unknown sector size");
 
-    window_post::<SectorShape2KiB>(sector_size, 2 * sector_count - 1, sector_count, false, APIVersion::V1_0)?;
-    window_post::<SectorShape2KiB>(sector_size, 2 * sector_count - 1, sector_count, true, APIVersion::V1_0)?;
-    window_post::<SectorShape2KiB>(sector_size, 2 * sector_count - 1, sector_count, false, APIVersion::V1_1)?;
-    window_post::<SectorShape2KiB>(sector_size, 2 * sector_count - 1, sector_count, true, APIVersion::V1_1)
+    window_post::<SectorShape2KiB>(
+        sector_size,
+        2 * sector_count - 1,
+        sector_count,
+        false,
+        APIVersion::V1_0,
+    )?;
+    window_post::<SectorShape2KiB>(
+        sector_size,
+        2 * sector_count - 1,
+        sector_count,
+        true,
+        APIVersion::V1_0,
+    )?;
+    window_post::<SectorShape2KiB>(
+        sector_size,
+        2 * sector_count - 1,
+        sector_count,
+        false,
+        APIVersion::V1_1,
+    )?;
+    window_post::<SectorShape2KiB>(
+        sector_size,
+        2 * sector_count - 1,
+        sector_count,
+        true,
+        APIVersion::V1_1,
+    )
 }
 
 #[test]
@@ -524,10 +680,34 @@ fn test_window_post_single_partition_matching_2kib_base_8() -> Result<()> {
         .get(&sector_size)
         .expect("unknown sector size");
 
-    window_post::<SectorShape2KiB>(sector_size, sector_count, sector_count, false, APIVersion::V1_0)?;
-    window_post::<SectorShape2KiB>(sector_size, sector_count, sector_count, true, APIVersion::V1_0)?;
-    window_post::<SectorShape2KiB>(sector_size, sector_count, sector_count, false, APIVersion::V1_1)?;
-    window_post::<SectorShape2KiB>(sector_size, sector_count, sector_count, true, APIVersion::V1_1)
+    window_post::<SectorShape2KiB>(
+        sector_size,
+        sector_count,
+        sector_count,
+        false,
+        APIVersion::V1_0,
+    )?;
+    window_post::<SectorShape2KiB>(
+        sector_size,
+        sector_count,
+        sector_count,
+        true,
+        APIVersion::V1_0,
+    )?;
+    window_post::<SectorShape2KiB>(
+        sector_size,
+        sector_count,
+        sector_count,
+        false,
+        APIVersion::V1_1,
+    )?;
+    window_post::<SectorShape2KiB>(
+        sector_size,
+        sector_count,
+        sector_count,
+        true,
+        APIVersion::V1_1,
+    )
 }
 
 fn window_post<Tree: 'static + MerkleTreeTrait>(
