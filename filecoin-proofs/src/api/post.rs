@@ -468,24 +468,24 @@ pub fn generate_window_post<Tree: 'static + MerkleTreeTrait>(
     replicas: &BTreeMap<SectorId, PrivateReplicaInfo<Tree>>,
     prover_id: ProverId,
 ) -> Result<SnarkProof> {
-    info!("generate_window_post:start");
+    println!("dc real generate_window_post:start");
     ensure!(
         post_config.typ == PoStType::Window,
         "invalid post config type"
     );
-
+    println!("dc real generate_window_post:start1");
     let randomness_safe = as_safe_commitment(randomness, "randomness")?;
     let prover_id_safe = as_safe_commitment(&prover_id, "prover_id")?;
 
     let vanilla_params = window_post_setup_params(&post_config);
     let partitions = get_partitions_for_window_post(replicas.len(), &post_config);
-
     let sector_count = vanilla_params.sector_count;
     let setup_params = compound_proof::SetupParams {
         vanilla_params,
         partitions,
         priority: post_config.priority,
     };
+    println!("dc real generate_window_post:start2");
 
     let pub_params: compound_proof::PublicParams<fallback::FallbackPoSt<Tree>> =
         fallback::FallbackPoStCompound::setup(&setup_params)?;
@@ -495,11 +495,13 @@ pub fn generate_window_post<Tree: 'static + MerkleTreeTrait>(
         .iter()
         .map(|(_id, replica)| replica.merkle_tree(post_config.sector_size))
         .collect::<Result<_>>()?;
-
+    println!("dc real generate_window_post:start3");
     let mut pub_sectors = Vec::with_capacity(sector_count);
     let mut priv_sectors = Vec::with_capacity(sector_count);
-
+    println!("dc real generate_window_post:start4");
     for ((sector_id, replica), tree) in replicas.iter().zip(trees.iter()) {
+        println!("dc real generate_window_post {:?},{:?}",sector_id,replica);
+
         let comm_r = replica.safe_comm_r()?;
         let comm_c = replica.safe_comm_c()?;
         let comm_r_last = replica.safe_comm_r_last()?;
@@ -514,18 +516,18 @@ pub fn generate_window_post<Tree: 'static + MerkleTreeTrait>(
             comm_r_last,
         });
     }
-
+    println!("dc real generate_window_post:start5");
     let pub_inputs = fallback::PublicInputs {
         randomness: randomness_safe,
         prover_id: prover_id_safe,
         sectors: &pub_sectors,
         k: None,
     };
-
+    println!("dc real generate_window_post:start6");
     let priv_inputs = fallback::PrivateInputs::<Tree> {
         sectors: &priv_sectors,
     };
-
+    println!("dc real generate_window_post:start7");
     let proof = fallback::FallbackPoStCompound::prove(
         &pub_params,
         &pub_inputs,
@@ -533,7 +535,7 @@ pub fn generate_window_post<Tree: 'static + MerkleTreeTrait>(
         &groth_params,
     )?;
 
-    info!("generate_window_post:finish");
+    println!("dc real generate_window_post:finish");
 
     Ok(proof.to_vec()?)
 }

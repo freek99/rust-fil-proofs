@@ -1,5 +1,5 @@
 [package]
-name = "filecoin-proofs"
+name = "filecoin_proofs_v1"
 description = "The Filecoin specific aspects of storage-proofs, including a C based FFI, to generate and verify proofs."
 version = "5.1.4"
 authors = ["dignifiedquire <dignifiedquire@gmail.com>", "laser <l@s3r.com>", "porcuquine <porcuquine@users.noreply.github.com>"]
