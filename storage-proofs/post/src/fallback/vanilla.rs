@@ -279,7 +279,7 @@ impl<'a, Tree: 'a + MerkleTreeTrait> ProofScheme<'a> for FallbackPoSt<'a, Tree> 
         priv_inputs: &'b Self::PrivateInputs,
         partition_count: usize,
     ) -> Result<Vec<Self::Proof>> {
-        println!("dc prove_all_partitions start,{:?},{:?},{:?},{:?}",pub_params,pub_inputs,priv_inputs,partition_count);
+        println!("dc prove_all_partitions start");
         ensure!(
             priv_inputs.sectors.len() == pub_inputs.sectors.len(),
             "inconsistent number of private and public sectors {} != {}",
