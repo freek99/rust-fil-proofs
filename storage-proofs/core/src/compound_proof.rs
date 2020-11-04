@@ -79,6 +79,7 @@ where
         ensure!(partition_count > 0, "There must be partitions");
 
         println!("vanilla_proof:start");
+        info!("vanilla_proof:start");
         let vanilla_proofs = S::prove_all_partitions(
             &pub_params.vanilla_params,
             &pub_in,
@@ -87,7 +88,7 @@ where
         )?;
 
         println!("vanilla_proof:finish");
-
+        info!("vanilla_proof:finish");
         let sanity_check =
             S::verify_all_partitions(&pub_params.vanilla_params, &pub_in, &vanilla_proofs)?;
         ensure!(sanity_check, "sanity check failed");
