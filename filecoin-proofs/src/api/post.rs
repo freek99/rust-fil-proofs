@@ -468,7 +468,7 @@ pub fn generate_window_post<Tree: 'static + MerkleTreeTrait>(
     replicas: &BTreeMap<SectorId, PrivateReplicaInfo<Tree>>,
     prover_id: ProverId,
 ) -> Result<SnarkProof> {
-    println!("dc real generate_window_post:start");
+    println!("dc real generate_window_post:start config ,{:?}",post_config);
     ensure!(
         post_config.typ == PoStType::Window,
         "invalid post config type"
