@@ -73,13 +73,13 @@ where
         priv_in: &S::PrivateInputs,
         groth_params: &'b groth16::MappedParameters<Bls12>,
     ) -> Result<MultiProof<'b>> {
+        println!("vanilla_proof:start0");
         let partition_count = Self::partition_count(pub_params);
 
         // This will always run at least once, since there cannot be zero partitions.
         ensure!(partition_count > 0, "There must be partitions");
 
         println!("vanilla_proof:start");
-        info!("vanilla_proof:start");
         let vanilla_proofs = S::prove_all_partitions(
             &pub_params.vanilla_params,
             &pub_in,
@@ -88,12 +88,12 @@ where
         )?;
 
         println!("vanilla_proof:finish");
-        info!("vanilla_proof:finish");
         let sanity_check =
             S::verify_all_partitions(&pub_params.vanilla_params, &pub_in, &vanilla_proofs)?;
         ensure!(sanity_check, "sanity check failed");
 
         println!("snark_proof:start");
+
         let groth_proofs = Self::circuit_proofs(
             pub_in,
             vanilla_proofs,
