@@ -279,6 +279,7 @@ impl<'a, Tree: 'a + MerkleTreeTrait> ProofScheme<'a> for FallbackPoSt<'a, Tree> 
         priv_inputs: &'b Self::PrivateInputs,
         partition_count: usize,
     ) -> Result<Vec<Self::Proof>> {
+        println("dc prove_all_partitions start")
         ensure!(
             priv_inputs.sectors.len() == pub_inputs.sectors.len(),
             "inconsistent number of private and public sectors {} != {}",
@@ -288,7 +289,7 @@ impl<'a, Tree: 'a + MerkleTreeTrait> ProofScheme<'a> for FallbackPoSt<'a, Tree> 
 
         let num_sectors_per_chunk = pub_params.sector_count;
         let num_sectors = pub_inputs.sectors.len();
-
+        println("dc prove_all_partitions start1")
         ensure!(
             num_sectors <= partition_count * num_sectors_per_chunk,
             "cannot prove the provided number of sectors: {} > {} * {}",
@@ -301,7 +302,7 @@ impl<'a, Tree: 'a + MerkleTreeTrait> ProofScheme<'a> for FallbackPoSt<'a, Tree> 
 
         // Use `BTreeSet` so failure result will be canonically ordered (sorted).
         let mut faulty_sectors = BTreeSet::new();
-
+        println("dc prove_all_partitions start2")
         for (j, (pub_sectors_chunk, priv_sectors_chunk)) in pub_inputs
             .sectors
             .chunks(num_sectors_per_chunk)
@@ -386,7 +387,7 @@ impl<'a, Tree: 'a + MerkleTreeTrait> ProofScheme<'a> for FallbackPoSt<'a, Tree> 
 
             partition_proofs.push(Proof { sectors: proofs });
         }
-
+        println("dc prove_all_partitions finish")
         if faulty_sectors.is_empty() {
             Ok(partition_proofs)
         } else {

@@ -32,28 +32,28 @@ pub trait ProofScheme<'a> {
         priv_in: &Self::PrivateInputs,
         partition_count: usize,
     ) -> Result<Vec<Self::Proof>> {
-        info!("groth_proof_count: {}", partition_count);
-        info!("generating {} groth proofs.", partition_count);
+        println!("groth_proof_count: {}", partition_count);
+        println!("generating {} groth proofs.", partition_count);
 
         let start = Instant::now();
 
         let result = (0..partition_count)
             .map(|k| {
-                info!("generating groth proof {}.", k);
+                println!("generating groth proof {}.", k);
                 let start = Instant::now();
 
                 let partition_pub_in = Self::with_partition((*pub_in).clone(), Some(k));
                 let proof = Self::prove(pub_params, &partition_pub_in, priv_in);
 
                 let proof_time = start.elapsed();
-                info!("groth_proof_time: {:?}", proof_time);
+                println!("groth_proof_time: {:?}", proof_time);
 
                 proof
             })
             .collect::<Result<Vec<Self::Proof>>>();
 
         let total_proof_time = start.elapsed();
-        info!("total_groth_proof_time: {:?}", total_proof_time);
+        println!("total_groth_proof_time: {:?}", total_proof_time);
 
         result
     }
