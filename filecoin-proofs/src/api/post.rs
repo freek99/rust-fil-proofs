@@ -533,12 +533,15 @@ pub fn generate_window_post<Tree: 'static + MerkleTreeTrait>(
         sectors: &priv_sectors,
     };
     println!("dc real generate_window_post:start7");
+    let start1 = Instant::now();
     let proof = fallback::FallbackPoStCompound::prove(
         &pub_params,
         &pub_inputs,
         &priv_inputs,
         &groth_params,
     )?;
+    let prove_time = start1.elapsed();
+    println!("dc real generate_window_post time {:?}",prove_time);
 
     println!("dc real generate_window_post:finish");
 
