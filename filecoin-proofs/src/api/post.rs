@@ -499,6 +499,8 @@ pub fn generate_window_post<Tree: 'static + MerkleTreeTrait>(
     let mut pub_sectors = Vec::with_capacity(sector_count);
     let mut priv_sectors = Vec::with_capacity(sector_count);
     println!("dc real generate_window_post:start4");
+    use std::time::Instant;
+    let start = Instant::now();
     for ((sector_id, replica), tree) in replicas.iter().zip(trees.iter()) {
         println!("dc real generate_window_post {:?},{:?}",sector_id,replica);
 
@@ -516,7 +518,10 @@ pub fn generate_window_post<Tree: 'static + MerkleTreeTrait>(
             comm_r_last,
         });
     }
-    println!("dc real generate_window_post:start5");
+    let read_time = start.elapsed();
+    println!("dc real read file from disk time {:?}",read_time);
+
+    println!("dc real generate_window_post:start5:");
     let pub_inputs = fallback::PublicInputs {
         randomness: randomness_safe,
         prover_id: prover_id_safe,
