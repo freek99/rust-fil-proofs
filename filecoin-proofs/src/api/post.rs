@@ -491,15 +491,22 @@ pub fn generate_window_post<Tree: 'static + MerkleTreeTrait>(
         fallback::FallbackPoStCompound::setup(&setup_params)?;
     let groth_params = get_post_params::<Tree>(&post_config)?;
 
+    use std::time::Instant;
+    let start0 = Instant::now();
+
     let trees: Vec<_> = replicas
         .iter()
         .map(|(_id, replica)| replica.merkle_tree(post_config.sector_size))
         .collect::<Result<_>>()?;
+
+    let merkle_tree_time = start0.elapsed();
+    println!("dc real make merkle_tree time {:?}",merkle_tree_time);
+
     println!("dc real generate_window_post:start3");
     let mut pub_sectors = Vec::with_capacity(sector_count);
     let mut priv_sectors = Vec::with_capacity(sector_count);
     println!("dc real generate_window_post:start4");
-    use std::time::Instant;
+
     let start = Instant::now();
     for ((sector_id, replica), tree) in replicas.iter().zip(trees.iter()) {
         println!("dc real generate_window_post {:?},{:?}",sector_id,replica);
