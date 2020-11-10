@@ -468,6 +468,9 @@ pub fn generate_window_post<Tree: 'static + MerkleTreeTrait>(
     replicas: &BTreeMap<SectorId, PrivateReplicaInfo<Tree>>,
     prover_id: ProverId,
 ) -> Result<SnarkProof> {
+    use std::time::Instant;
+    let start00 = Instant::now();
+
     println!("dc real generate_window_post:start config ,{:?}",post_config);
     ensure!(
         post_config.typ == PoStType::Window,
@@ -490,8 +493,10 @@ pub fn generate_window_post<Tree: 'static + MerkleTreeTrait>(
     let pub_params: compound_proof::PublicParams<fallback::FallbackPoSt<Tree>> =
         fallback::FallbackPoStCompound::setup(&setup_params)?;
     let groth_params = get_post_params::<Tree>(&post_config)?;
+    let get_partitions_time = start00.elapsed();
+    println!("dc real get_partitions time {:?}",get_partitions_time);
 
-    use std::time::Instant;
+
     let start0 = Instant::now();
 
     let trees: Vec<_> = replicas
