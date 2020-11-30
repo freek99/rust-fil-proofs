@@ -861,7 +861,8 @@ pub fn generate_window_post<Tree: 'static + MerkleTreeTrait>(
         "invalid post config type"
     );
 
-    info!("dc generate_window_post:start2");
+    info!("dc generate_window_post:start1");
+    println!("dc generate_window_post:start1");
 
     let randomness_safe = as_safe_commitment(randomness, "randomness")?;
     let prover_id_safe = as_safe_commitment(&prover_id, "prover_id")?;
@@ -925,7 +926,8 @@ pub fn generate_window_post<Tree: 'static + MerkleTreeTrait>(
         sectors: &priv_sectors,
     };
 
-    info!("dc generate_window_post:finish");
+    info!("dc generate_window_post:start");
+    println!("dc generate_window_post:start2");
     let proof = fallback::FallbackPoStCompound::prove(
         &pub_params,
         &pub_inputs,
@@ -934,6 +936,7 @@ pub fn generate_window_post<Tree: 'static + MerkleTreeTrait>(
     )?;
 
     info!("generate_window_post:finish");
+    println!("dc generate_window_post:finish");
 
     Ok(proof.to_vec()?)
 }
