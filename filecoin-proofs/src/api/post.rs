@@ -855,6 +855,8 @@ pub fn generate_window_post<Tree: 'static + MerkleTreeTrait>(
     replicas: &BTreeMap<SectorId, PrivateReplicaInfo<Tree>>,
     prover_id: ProverId,
 ) -> Result<SnarkProof> {
+    use std::time::Instant;
+    let start0 = Instant::now();
     info!("generate_window_post:start");
     ensure!(
         post_config.typ == PoStType::Window,
@@ -926,8 +928,12 @@ pub fn generate_window_post<Tree: 'static + MerkleTreeTrait>(
         sectors: &priv_sectors,
     };
 
+    let merkle_tree_time = start0.elapsed();
+    println!("load  merkle_tree time: {:?}",merkle_tree_time);
+
     info!("dc generate_window_post:start");
     println!("dc generate_window_post:start2");
+    let start1 = Instant::now();
     let proof = fallback::FallbackPoStCompound::prove(
         &pub_params,
         &pub_inputs,
@@ -937,6 +943,9 @@ pub fn generate_window_post<Tree: 'static + MerkleTreeTrait>(
 
     info!("generate_window_post:finish");
     println!("dc generate_window_post:finish");
+
+    let prove_time = start1.elapsed();
+    println!("prove_time time: {:?}",prove_time);
 
     Ok(proof.to_vec()?)
 }
