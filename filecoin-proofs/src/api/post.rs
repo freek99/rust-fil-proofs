@@ -884,6 +884,7 @@ pub fn generate_window_post<Tree: 'static + MerkleTreeTrait>(
         .par_iter()
         .map(|(sector_id, replica)| {
             info!("dc read data to merkle_tree: {:?}",replica);
+            println!("dc read data to merkle_tree: {:?}",replica);
             replica
                 .merkle_tree(post_config.sector_size)
                 .with_context(|| {
