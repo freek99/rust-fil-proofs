@@ -2,6 +2,7 @@ use std::collections::BTreeMap;
 use std::hash::{Hash, Hasher as StdHasher};
 use std::marker::PhantomData;
 use std::path::{Path, PathBuf};
+use rayon::prelude::*;
 
 use anyhow::{anyhow, ensure, Context, Result};
 use bincode::deserialize;
@@ -860,6 +861,8 @@ pub fn generate_window_post<Tree: 'static + MerkleTreeTrait>(
         "invalid post config type"
     );
 
+    info!("dc generate_window_post:start2");
+
     let randomness_safe = as_safe_commitment(randomness, "randomness")?;
     let prover_id_safe = as_safe_commitment(&prover_id, "prover_id")?;
 
@@ -878,12 +881,13 @@ pub fn generate_window_post<Tree: 'static + MerkleTreeTrait>(
     let groth_params = get_post_params::<Tree>(&post_config)?;
 
     let trees: Vec<_> = replicas
-        .iter()
+        .par_iter()
         .map(|(sector_id, replica)| {
+            info!("dc read data to merkle_tree: {:?}",replica);
             replica
                 .merkle_tree(post_config.sector_size)
                 .with_context(|| {
-                    format!("generate_window_post: merkle_tree failed: {:?}", sector_id)
+                    format!("generategit_window_post: merkle_tree failed: {:?}", sector_id)
                 })
         })
         .collect::<Result<_>>()?;
@@ -920,6 +924,7 @@ pub fn generate_window_post<Tree: 'static + MerkleTreeTrait>(
         sectors: &priv_sectors,
     };
 
+    info!("dc generate_window_post:finish");
     let proof = fallback::FallbackPoStCompound::prove(
         &pub_params,
         &pub_inputs,
